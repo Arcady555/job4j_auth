@@ -2,6 +2,7 @@ package ru.job4j.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.job4j.domain.Person;
 import ru.job4j.repository.PersonRepository;
@@ -24,10 +25,19 @@ public class PersonService {
     }
 
     public Person save(Person person) {
-        return persons.save(person);
+        if (person == null) {
+            HttpStatus.valueOf("The person for save is not found!");
+            return null;
+        } else {
+            return persons.save(person);
+        }
     }
 
     public void delete(Person person) {
-        persons.delete(person);
+        if (person == null) {
+            HttpStatus.valueOf("The person for delete is not found!");
+        } else {
+            persons.delete(person);
+        }
     }
 }

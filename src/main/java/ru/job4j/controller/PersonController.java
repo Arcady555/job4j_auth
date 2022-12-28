@@ -39,11 +39,7 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        try {
-            this.persons.save(person);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.persons.save(person);
         return ResponseEntity.ok().build();
     }
 
@@ -52,8 +48,6 @@ public class PersonController {
         Person person = new Person();
         person.setId(id);
         this.persons.delete(person);
-        return new ResponseEntity<>(
-                this.persons.findById(id).isPresent() ? HttpStatus.valueOf("Not delete!") : HttpStatus.OK
-        );
+        return ResponseEntity.ok().build();
     }
 }

@@ -25,8 +25,8 @@ public class PersonService {
     }
 
     public Person save(Person person) {
-        if (person == null) {
-            HttpStatus.valueOf("The person for save is not found!");
+        if (findById(person.getId()).isEmpty()) {
+            HttpStatus.valueOf("Всё плохо!");
             return null;
         } else {
             return persons.save(person);
@@ -34,8 +34,8 @@ public class PersonService {
     }
 
     public void delete(Person person) {
-        if (person == null) {
-            HttpStatus.valueOf("The person for delete is not found!");
+        if (findById(person.getId()).isEmpty()) {
+            HttpStatus.valueOf("Всё плохо!");
         } else {
             persons.delete(person);
         }

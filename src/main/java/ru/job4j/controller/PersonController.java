@@ -30,7 +30,7 @@ public class PersonController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
+    public ResponseEntity<Boolean> create(@RequestBody Person person) {
         return new ResponseEntity<>(
                 this.persons.save(person),
                 HttpStatus.CREATED

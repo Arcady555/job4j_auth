@@ -24,12 +24,14 @@ public class PersonService {
     }
 
     public boolean save(Person person) {
-        persons.save(person);
-        return findById(person.getId()).isPresent();
+        var temp = findById(person.getId());
+        temp.ifPresent(persons::save);
+        return temp.isPresent();
     }
 
     public boolean delete(Person person) {
-        persons.delete(person);
-        return findById(person.getId()).isPresent();
+        var temp = findById(person.getId());
+        temp.ifPresent(persons::delete);
+        return temp.isPresent();
     }
 }

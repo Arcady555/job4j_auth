@@ -31,23 +31,22 @@ public class PersonController {
 
     @PostMapping("/")
     public ResponseEntity<Boolean> create(@RequestBody Person person) {
-        return new ResponseEntity<>(
+        return this.persons.save(person) ? new ResponseEntity<>(
                 this.persons.save(person),
-                HttpStatus.CREATED
-        );
+                HttpStatus.CREATED) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        this.persons.save(person);
-        return ResponseEntity.ok().build();
+        return this.persons.save(person) ? ResponseEntity.ok().build()
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         Person person = new Person();
         person.setId(id);
-        this.persons.delete(person);
-        return ResponseEntity.ok().build();
+        return this.persons.delete(person) ? ResponseEntity.ok().build()
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

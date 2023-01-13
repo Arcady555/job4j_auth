@@ -3,6 +3,7 @@ package ru.job4j.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.domain.Person;
@@ -28,12 +29,12 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class.getSimpleName());
 
     @PostMapping("/sign-up")
-    public void signUp(@RequestBody Person person) {
+    public ResponseEntity<Person> signUp(@RequestBody Person person) {
         if (Objects.equals(person.getLogin(), "хер") || Objects.equals(person.getPassword(), "хер")) {
             throw new IllegalArgumentException("foul language login or password");
         }
         person.setPassword(encoder.encode(person.getPassword()));
-        persons.save(person);
+        return new ResponseEntity<>(this.persons.save(person), HttpStatus.CREATED);
     }
 
     @GetMapping("/all")

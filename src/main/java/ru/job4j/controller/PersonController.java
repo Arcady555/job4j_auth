@@ -12,6 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
+import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController
@@ -25,7 +26,7 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Person> findById(@PathVariable int id) {
+    public ResponseEntity<Person> findById(@Valid @PathVariable int id) {
         var person = this.persons.findById(id);
         if (person.isEmpty()) {
             throw new ResponseStatusException(
@@ -38,7 +39,7 @@ public class PersonController {
     }
 
     @PatchMapping("/{id}")
-    public Person patch(@RequestBody Person person) throws InvocationTargetException, IllegalAccessException {
+    public Person patch(@Valid @RequestBody Person person) throws InvocationTargetException, IllegalAccessException {
         var current = persons.findById(person.getId());
         if (current.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -49,8 +50,10 @@ public class PersonController {
                 var getMethod = namePerMethod.get(name);
                 var setMethod = namePerMethod.get(name.replace("get", "set"));
                 if (setMethod == null) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                            "Impossible invoke set method from object : " + current.get() + ", Check set and get pairs.");
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,
+                            "Impossible invoke set method from object : " + current.get() + ", Check set and get pairs."
+                    );
                 }
                 var newValue = getMethod.invoke(person);
                 if (newValue != null) {
@@ -63,20 +66,20 @@ public class PersonController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Boolean> create(@RequestBody Person person) {
+    public ResponseEntity<Boolean> create(@Valid @RequestBody Person person) {
         return this.persons.save(person) ? new ResponseEntity<>(
                 this.persons.save(person),
                 HttpStatus.CREATED) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
         return this.persons.save(person) ? ResponseEntity.ok().build()
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@Valid @PathVariable int id) {
         Person person = new Person();
         person.setId(id);
         return this.persons.delete(person) ? ResponseEntity.ok().build()

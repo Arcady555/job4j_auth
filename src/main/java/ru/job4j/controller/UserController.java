@@ -11,6 +11,7 @@ import ru.job4j.repository.PersonRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class UserController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class.getSimpleName());
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Person> signUp(@RequestBody Person person) {
+    public ResponseEntity<Person> signUp(@Valid @RequestBody Person person) {
         if (Objects.equals(person.getLogin(), "хер") || Objects.equals(person.getPassword(), "хер")) {
             throw new IllegalArgumentException("foul language login or password");
         }

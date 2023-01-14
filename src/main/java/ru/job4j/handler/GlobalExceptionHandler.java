@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -14,7 +15,6 @@ import java.util.HashMap;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class.getSimpleName());
     private final ObjectMapper objectMapper;
 
@@ -22,12 +22,14 @@ public class GlobalExceptionHandler {
         this.objectMapper = objectMapper;
     }
 
-    @ExceptionHandler(value = {NullPointerException.class})
-    public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @ExceptionHandler(value = {NullPointerException.class, MethodArgumentNotValidException.class})
+    public void handleException(Exception e,
+                                HttpServletRequest request,
+                                HttpServletResponse response) throws IOException {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType("application/json");
         response.getWriter().write(objectMapper.writeValueAsString(new HashMap<>() { {
-            put("message", "Some of fields empty");
+            put("message", "Some of fields not correct");
             put("details", e.getMessage());
         }}));
         LOGGER.error(e.getMessage());

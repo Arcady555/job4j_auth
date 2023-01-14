@@ -8,6 +8,9 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.domain.Person;
 import ru.job4j.service.PersonService;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 
 @AllArgsConstructor
@@ -32,6 +35,31 @@ public class PersonController {
                 person.orElse(new Person()),
                 HttpStatus.OK
         );
+    }
+
+    @PatchMapping("/{id}")
+    public Person patch(@RequestBody Person person) throws InvocationTargetException, IllegalAccessException {
+        var current = persons.findById(person.getId());
+        if (current.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        HashMap<String, Method> namePerMethod = persons.methods(person);
+        for (var name : namePerMethod.keySet()) {
+            if (name.startsWith("get")) {
+                var getMethod = namePerMethod.get(name);
+                var setMethod = namePerMethod.get(name.replace("get", "set"));
+                if (setMethod == null) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Impossible invoke set method from object : " + current.get() + ", Check set and get pairs.");
+                }
+                var newValue = getMethod.invoke(person);
+                if (newValue != null) {
+                    setMethod.invoke(current, newValue);
+                }
+            }
+        }
+        persons.save(person);
+        return current.get();
     }
 
     @PostMapping("/")

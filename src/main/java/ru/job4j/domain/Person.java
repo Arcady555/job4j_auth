@@ -26,6 +26,6 @@ public class Person {
     private String login;
 
     @NotNull(message = "Password must be not empty")
-    @Min(value = 3, message = "Password must be more than 3 characters")
+  //  @Min(value = 3, message = "Password must be more than 3 characters")
     private String password;
 }

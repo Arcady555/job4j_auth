@@ -45,13 +45,7 @@ Postgresql 14
 
 ## Запуск приложения
 
-### 1. Создать бд - наберите в консоли:
-
-```
-create database todo;
-```
-
-### 2. Запуск приложения с maven. 
+### 1. Запуск приложения с maven. 
 Перейдите в корень проекта через командную строку и выполните команды:
 
 ```
@@ -62,6 +56,42 @@ mvn clean install
 mvn spring-boot:run
 ```
 
+### 1. Запуск приложения  через Docker.
+Создайте через консоль папку auth, войдите в нёё:
 
+```
+mkdir auth
+cd auth 
+```
+
+Скачайте проект
+```
+git clone https://github.com/Arcady555/job4j_auth
+```
+Соберите контейнер
+```
+docker-compose build
+```
+Запускайте!
+```
+docker-compose up -d
+```
+
+Теперь, отправив запрос на http://localhost:8080/persons :
+```
+{
+    "login" : "arcady1",
+    "password" : "123"
+}
+```
+, Вы получите регистрацию на сервере.
+
+Чтобы получить BEER токен для авторизованной работы, запросите на http://localhost:8080/login :
+```
+{
+    "login" : "arcady1",
+    "password" : "123"
+}
+```
 
 ## Have a good job!
